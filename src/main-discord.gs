@@ -11,55 +11,53 @@ const profiles = [
   },
 ];
 
-const discord_notify = true
-const discordWebhook = ""
+const discord_notify = true;
+const discordWebhook = "";
 
 /** The above is the config. Please refer to the instructions on https://github.com/canaria3406/hoyolab-auto-sign for configuration. **/
 /** The following is the script code. Please DO NOT modify. **/
 
 const urlDict = {
-  Genshin: 'https://sg-hk4e-api.hoyolab.com/event/sol/sign?lang=en-us&act_id=e202102251931481',
-  Star_Rail: 'https://sg-public-api.hoyolab.com/event/luna/os/sign?lang=en-us&act_id=e202303301540311',
-  Honkai_3: 'https://sg-public-api.hoyolab.com/event/mani/sign?lang=en-us&act_id=e202110291205111',
-  Tears_of_Themis: 'https://sg-public-api.hoyolab.com/event/luna/os/sign?lang=en-us&act_id=e202308141137581',
-  Zenless_Zone_Zero: 'https://sg-public-api.hoyolab.com/event/luna/zzz/os/sign?lang=en-us&act_id=e202406031448091'
+  Genshin:
+    "https://sg-hk4e-api.hoyolab.com/event/sol/sign?lang=en-us&act_id=e202102251931481",
+  Star_Rail:
+    "https://sg-public-api.hoyolab.com/event/luna/os/sign?lang=en-us&act_id=e202303301540311",
+  Honkai_3:
+    "https://sg-public-api.hoyolab.com/event/mani/sign?lang=en-us&act_id=e202110291205111",
+  Tears_of_Themis:
+    "https://sg-public-api.hoyolab.com/event/luna/os/sign?lang=en-us&act_id=e202308141137581",
+  Zenless_Zone_Zero:
+    "https://sg-public-api.hoyolab.com/event/luna/zzz/os/sign?lang=en-us&act_id=e202406031448091"
 };
 
-/** 
+/**
   The below code is written due to the some game(s) requiring a extra header. 
   More info about it on :  https://github.com/canaria3406/hoyolab-auto-sign/issues/52 
 **/
 const headerDict = {
   default: {
-    'Accept': 'application/json, text/plain, */*',
-    'Accept-Encoding': 'gzip, deflate, br',
-    'Connection': 'keep-alive',
-    'x-rpc-app_version': '2.34.1',
-    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36',
-    'x-rpc-client_type': '4',
-    'Referer': 'https://act.hoyolab.com/',
-    'Origin': 'https://act.hoyolab.com',
+    Accept: "application/json, text/plain, */*",
+    "Accept-Encoding": "gzip, deflate, br",
+    Connection: "keep-alive",
+    "x-rpc-app_version": "2.34.1",
+    "User-Agent":
+      "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36",
+    "x-rpc-client_type": "4",
+    Referer: "https://act.hoyolab.com/",
+    Origin: "https://act.hoyolab.com"
   },
-  Genshin: {
-
-  },
-  Star_Rail: {
-
-  },
-  Honkai_3: {
-
-  },
-  Tears_of_Themis: {
-
-  },
+  Genshin: {},
+  Star_Rail: {},
+  Honkai_3: {},
+  Tears_of_Themis: {},
   Zenless_Zone_Zero: {
-    'x-rpc-signgame': 'zzz',
+    "x-rpc-signgame": "zzz"
   }
-}
+};
 
 async function main() {
   const messages = await Promise.all(profiles.map(autoSignFunction));
-  const hoyolabResp = `${messages.join('\n\n')}`;
+  const hoyolabResp = `${messages.join("\n\n")}`;
 
   if (discord_notify && discordWebhook) {
     postWebhook(hoyolabResp);
@@ -68,6 +66,11 @@ async function main() {
 
 function discordPing(discordId) {
   return `<@${discordId}> `;
+}
+
+function isCheckedIn(message) {
+  if (!message || typeof message !== "string") return false;
+  return message.toLowerCase().includes("checked in");
 }
 
 function autoSignFunction({
@@ -82,39 +85,94 @@ function autoSignFunction({
 }) {
   const urlsnheaders = [];
 
-  if (genshin) urlsnheaders.push({ url: urlDict.Genshin, headers: { Cookie: token, ...headerDict["default"], ...headerDict["Genshin"]} });
-  if (honkai_star_rail) urlsnheaders.push({ url: urlDict.Star_Rail, headers: { Cookie: token, ...headerDict["default"], ...headerDict["Star_Rail"]} });
-  if (honkai_3) urlsnheaders.push({ url: urlDict.Honkai_3, headers: { Cookie: token, ...headerDict["default"], ...headerDict["Honkai_3"]} });
-  if (tears_of_themis) urlsnheaders.push({ url: urlDict.Tears_of_Themis, headers: { Cookie: token, ...headerDict["default"], ...headerDict["Tears_of_Themis"]} });
-  if (zenless_zone_zero) urlsnheaders.push({ url: urlDict.Zenless_Zone_Zero, headers: { Cookie: token, ...headerDict["default"], ...headerDict["Zenless_Zone_Zero"]} });
+  if (genshin)
+    urlsnheaders.push({
+      url: urlDict.Genshin,
+      headers: {
+        Cookie: token,
+        ...headerDict["default"],
+        ...headerDict["Genshin"]
+      }
+    });
+  if (honkai_star_rail)
+    urlsnheaders.push({
+      url: urlDict.Star_Rail,
+      headers: {
+        Cookie: token,
+        ...headerDict["default"],
+        ...headerDict["Star_Rail"]
+      }
+    });
+  if (honkai_3)
+    urlsnheaders.push({
+      url: urlDict.Honkai_3,
+      headers: {
+        Cookie: token,
+        ...headerDict["default"],
+        ...headerDict["Honkai_3"]
+      }
+    });
+  if (tears_of_themis)
+    urlsnheaders.push({
+      url: urlDict.Tears_of_Themis,
+      headers: {
+        Cookie: token,
+        ...headerDict["default"],
+        ...headerDict["Tears_of_Themis"]
+      }
+    });
+  if (zenless_zone_zero)
+    urlsnheaders.push({
+      url: urlDict.Zenless_Zone_Zero,
+      headers: {
+        Cookie: token,
+        ...headerDict["default"],
+        ...headerDict["Zenless_Zone_Zero"]
+      }
+    });
 
   const options = {
-    method: 'POST',
-    muteHttpExceptions: true,
+    method: "POST",
+    muteHttpExceptions: true
   };
 
-  let response = `Check-in completed for ${accountName} - ${discordPing(discordId)}`;
+  let response = `Check-in completed for ${accountName}`;
+  let shouldErrorPing = false;
 
-  var sleepTime = 0
-  const httpResponses = []
+  var sleepTime = 0;
+  const httpResponses = [];
   for (const urlnheaders of urlsnheaders) {
     Utilities.sleep(sleepTime);
-    httpResponses.push(UrlFetchApp.fetch(urlnheaders.url, { ...options, headers: urlnheaders.headers }));
+    httpResponses.push(
+      UrlFetchApp.fetch(urlnheaders.url, {
+        ...options,
+        headers: urlnheaders.headers
+      })
+    );
     sleepTime = 1000;
   }
 
   for (const [i, hoyolabResponse] of httpResponses.entries()) {
     const responseJson = JSON.parse(hoyolabResponse);
     const checkInResult = responseJson.message;
-    const gameName = Object.keys(urlDict).find(key => urlDict[key] === urlsnheaders[i].url)?.replace(/_/g, ' ');
-    const isError = checkInResult != "OK";
+    const gameName = Object.keys(urlDict)
+      .find((key) => urlDict[key] === urlsnheaders[i].url)
+      ?.replace(/_/g, " ");
+    const isError =
+      checkInResult != "OK" && !isCheckedIn(checkInResult);
     const bannedCheck = responseJson.data?.gt_result?.is_risk;
 
     if (bannedCheck) {
-      response += `\n${gameName}: ${accountName} - Auto check-in failed due to CAPTCHA blocking.`;
+      response += `\n${gameName}: Auto check-in failed due to CAPTCHA blocking.`;
+      shouldErrorPing = true;
     } else {
-      response += `\n${gameName}: ${isError ? accountName : ""} - ${checkInResult}`;
+      if (isError) shouldErrorPing = true;
+      response += `\n${gameName}: ${checkInResult}`;
     }
+  }
+
+  if (shouldErrorPing) {
+    response += `\n${discordPing(discordId)} an error occurred.`;
   }
 
   return response;
@@ -122,14 +180,14 @@ function autoSignFunction({
 
 function postWebhook(data) {
   let payload = JSON.stringify({
-    'username': 'Hoyolab Auto Claimer',
-    'avatar_url': 'https://i.imgur.com/LI1D4hP.png',
-    'content': data
+    username: "Hoyolab Auto Claimer",
+    avatar_url: "https://i.imgur.com/LI1D4hP.png",
+    content: data
   });
 
   const options = {
-    method: 'POST',
-    contentType: 'application/json',
+    method: "POST",
+    contentType: "application/json",
     payload: payload,
     muteHttpExceptions: true
   };
