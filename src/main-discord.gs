@@ -1,17 +1,17 @@
 const profiles = [
   {
-    token: "ltoken_v2=gBxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxCY; ltuid_v2=26XXXXX20;",
-    genshin: true,
-    honkai_star_rail: true,
+    token: "ltoken_v2=v2_CANARIAXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX3406; ltuid_v2=26XXXXX20;",
+    genshin: false,
+    honkai_star_rail: false,
     honkai_3: false,
     tears_of_themis: false,
     zenless_zone_zero: false,
-    accountName: "YOUR NICKNAME"
-  }
+    accountName: "accountName",
+    discordId: "000000000000000000"
+  },
 ];
 
 const discord_notify = true
-const myDiscordID = ""
 const discordWebhook = ""
 
 /** The above is the config. Please refer to the instructions on https://github.com/canaria3406/hoyolab-auto-sign for configuration. **/
@@ -66,8 +66,8 @@ async function main() {
   }
 }
 
-function discordPing() {
-  return myDiscordID ? `<@${myDiscordID}> ` : '';
+function discordPing(discordId) {
+  return `<@${discordId}> `;
 }
 
 function autoSignFunction({
@@ -77,7 +77,8 @@ function autoSignFunction({
   honkai_3 = false,
   tears_of_themis = false,
   zenless_zone_zero = false,
-  accountName
+  accountName,
+  discordId
 }) {
   const urlsnheaders = [];
 
@@ -92,7 +93,7 @@ function autoSignFunction({
     muteHttpExceptions: true,
   };
 
-  let response = `Check-in completed for ${accountName}`;
+  let response = `Check-in completed for ${accountName} - ${discordPing(discordId)}`;
 
   var sleepTime = 0
   const httpResponses = []
@@ -110,9 +111,9 @@ function autoSignFunction({
     const bannedCheck = responseJson.data?.gt_result?.is_risk;
 
     if (bannedCheck) {
-      response += `\n${gameName}: ${discordPing()} Auto check-in failed due to CAPTCHA blocking.`;
+      response += `\n${gameName}: ${accountName} - Auto check-in failed due to CAPTCHA blocking.`;
     } else {
-      response += `\n${gameName}: ${isError ? discordPing() : ""}${checkInResult}`;
+      response += `\n${gameName}: ${isError ? accountName : ""} - ${checkInResult}`;
     }
   }
 
@@ -121,7 +122,7 @@ function autoSignFunction({
 
 function postWebhook(data) {
   let payload = JSON.stringify({
-    'username': 'auto-sign',
+    'username': 'Hoyolab Auto Claimer',
     'avatar_url': 'https://i.imgur.com/LI1D4hP.png',
     'content': data
   });
